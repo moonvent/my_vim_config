@@ -1,46 +1,38 @@
 path_to_python_from_venv = "/venv/bin/python"
 
+
+local pythonPath = function()
+  -- debugpy supports launching an application with a different interpreter then the one used to launch debugpy itself.
+  -- The code below looks for a `venv` or `.venv` folder in the current directly and uses the python within.
+  -- You could adapt this - to for example use the `VIRTUAL_ENV` environment variable.
+  local cwd = vim.fn.getcwd()
+  if vim.fn.executable(cwd .. path_to_python_from_venv) == 1 then
+    return cwd .. path_to_python_from_venv
+  else
+    return '/usr/bin/python'
+  end
+end
+
 -- For sing file
 LaunchFileConf = {
   -- The first three options are required by nvim-dap
   type = 'python', -- the type here established the link to the adapter definition: `dap.adapters.python`
   request = 'launch',
-  name = "Launch file",
+  name = "Launch current buffer file",
   -- Options below are for debugpy, see https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings for supported options
-
+  pythonPath = pythonPath,
   program = "${file}", -- This configuration will launch the current file if used.
-  pythonPath = function()
-    -- debugpy supports launching an application with a different interpreter then the one used to launch debugpy itself.
-    -- The code below looks for a `venv` or `.venv` folder in the current directly and uses the python within.
-    -- You could adapt this - to for example use the `VIRTUAL_ENV` environment variable.
-    local cwd = vim.fn.getcwd()
-    if vim.fn.executable(cwd .. path_to_python_from_venv) == 1 then
-      return cwd .. path_to_python_from_venv
-    else
-      return '/usr/bin/python'
-    end
-  end,
 }
 
 LaunchAppConf = {
   -- The first three options are required by nvim-dap
   type = 'python', -- the type here established the link to the adapter definition: `dap.adapters.python`
   request = 'launch',
-  name = "Launch app",
+  name = "Launch main.py",
   -- Options below are for debugpy, see https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings for supported options
 
   program = "main.py", -- This configuration will launch the current file if used.
-  pythonPath = function()
-    -- debugpy supports launching an application with a different interpreter then the one used to launch debugpy itself.
-    -- The code below looks for a `venv` or `.venv` folder in the current directly and uses the python within.
-    -- You could adapt this - to for example use the `VIRTUAL_ENV` environment variable.
-    local cwd = vim.fn.getcwd()
-    if vim.fn.executable(cwd .. path_to_python_from_venv) == 1 then
-      return cwd .. path_to_python_from_venv
-    else
-      return '/usr/bin/python'
-    end
-  end,
+  pythonPath = pythonPath,
 }
 
 
@@ -48,20 +40,20 @@ LaunchAppConf = {
 DjangoConf = {
   type = 'python',
   request = 'launch',
-  name = 'Django',
-  program = vim.fn.getcwd() .. '/manage.py', -- NOTE: Adapt path to manage.py as needed
-  -- program = 'manage.py', -- NOTE: Adapt path to manage.py as needed
-  args = { 'runserver', '--noreload' },
+  name = 'Launch Django',
+  program = 'manage.py',
+    args = { 'runserver', '--noreload' },
 
   -- env = {
   --   DEBUG_SQL = '1',
   -- },
+  pythonPath = pythonPath,
 }
 
 LaunchTestConf = {
   type = 'python',
   request = 'launch',
-  name = 'Tests',
+  name = 'Launch current buffer test',
   module = 'pytest',
   -- program = "${workspaceFolder}/venv/bin/python",
   -- cwd = "${workspaceFolder}",
@@ -79,28 +71,6 @@ LaunchTestConf = {
   -- },
   -- stopOnEntry = true,
 }
-
-
--- DjangoConf3 = {
---   type = 'python',
---   request = 'launch',
---   name = 'Django',
---   program = vim.fn.getcwd() .. '/manage.py', -- NOTE: Adapt path to manage.py as needed
---   args = { 'import-data', 'etc/rpc/bbs-auto/bbs-auto-data-mapping.yml', '-ie', 'category', },
---   -- args = { 'infobackend', },
---
---   env = {
---   }
--- }
---
---
--- DjangoConf2 = {
---   type = 'python',
---   request = 'launch',
---   name = 'Django',
---   program = vim.fn.getcwd() .. '/manage.py', -- NOTE: Adapt path to manage.py as needed
---   args = { 'runserver', '8001', '--noreload' },
--- }
 
 
 gdscript = {
@@ -129,6 +99,15 @@ local dap = require('dap')
 
 
 dap.set_log_level('DEBUG')
+
+
+dap.configurations.python = {
+  LaunchAppConf,
+  LaunchFileConf,
+  DjangoConf,
+  LaunchTestConf,
+}
+
 
 
 dap.adapters.python = {
