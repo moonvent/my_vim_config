@@ -42,7 +42,7 @@ DjangoConf = {
   request = 'launch',
   name = 'Launch Django',
   program = 'manage.py',
-    args = { 'runserver', '--noreload' },
+  args = { 'runserver', '--noreload' },
 
   -- env = {
   --   DEBUG_SQL = '1',
@@ -65,6 +65,7 @@ LaunchTestConf = {
     "--log-cli-level=INFO",
     "--log-file=test_out.log",
   },
+  pythonPath = pythonPath,
   -- console= "integratedTerminal",
   -- env = {
   --         PYTHONPATH = "${workspaceFolder}",
