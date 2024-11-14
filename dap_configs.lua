@@ -110,6 +110,11 @@ dap.configurations.python = {
 }
 
 
+dap.configurations.gdscript = {
+  gdscript
+}
+
+
 
 dap.adapters.python = {
   type = 'executable',
@@ -165,11 +170,13 @@ rust = {
 
 local dap, dapui = require("dap"), require("dapui")
 
-dap.listeners.before.event_terminated["keep_open"] = function()
-  dapui.open({})
+dap.listeners.before.event_terminated["dapui_config"] = function()
+  -- vim.notify('Closed')
+  -- dapui.open({})
 end
-dap.listeners.before.event_exited["keep_open"] = function()
-  dapui.open({})
+dap.listeners.before.event_exited["dapui_config"] = function()
+  -- dapui.open({})
+  -- vim.notify('Closed 2')
 end
 
 
@@ -186,4 +193,16 @@ end
 -- first_text_for_output_after_repl_is_start = ""
 
 
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "gdscript",
+    callback = function()
+        -- need for lsp work with gdscript
+        require('lspconfig').gdscript.setup {}
+        vim.bo.shiftwidth = 2     -- amount spaces for tab
+        vim.bo.expandtab = false  -- switch spaces to tabs
+    end,
+})
+
 return {}
+
+
