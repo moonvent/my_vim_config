@@ -35,6 +35,10 @@ return {
         n = {
           ["<Leader>h"] = false,
           ["<leader>q"] = false,
+          ["gr"] = { "<cmd>Telescope lsp_references<cr>", desc = "References on this variable" },
+          ["grr"] = false;
+          ["grn"] = false;
+          ["gra"] = false;
           ["<Leader>dl"] = { "<cmd>lua require'dap'.run_last()<cr>", desc = "Run last configuration" },
           ["<Leader>;"] = { '"0p', desc = "Put copied value (even after cutting)" },
           ["<Leader>1"] = { "<cmd>let @+=expand('%')<cr>", desc = "Copy relative path of current opened in buffer file" },
