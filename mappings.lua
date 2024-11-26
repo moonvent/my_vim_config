@@ -36,6 +36,7 @@ return {
           ["<Leader>h"] = false,
           ["<leader>q"] = false,
           ["gr"] = { "<cmd>Telescope lsp_references<cr>", desc = "References on this variable" },
+          ["gd"] = { "<cmd>Telescope lsp_definitions<cr>", desc = "Definition of this variable" },
           ["grr"] = false;
           ["grn"] = false;
           ["gra"] = false;
@@ -45,6 +46,9 @@ return {
           ["<Leader>2"] = { "<cmd>let @+=expand('%:p')<cr>", desc = "Copy absolute path of current opened in buffer file" },
           ["<leader>qw"] = { "<cmd>q<cr>", desc = "Quit from buffer" },
           ["<leader>wq"] = { "<cmd>wqa<cr>", desc = "Quit with saving session and buffers" },
+        },
+        v = {
+          ["<Leader>;"] = { '"0p', desc = "Put copied value (even after cutting)" },
         },
       },
     },
