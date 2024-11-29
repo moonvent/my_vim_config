@@ -193,6 +193,36 @@ end
 -- first_text_for_output_after_repl_is_start = ""
 
 
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+    pattern = "*.gd",
+    callback = function()
+        -- get path to current file
+        local filepath = vim.fn.expand("%:p")
+        local temp_path = filepath .. ".tmp"
+
+        -- copy current file data to temp file
+        vim.fn.writefile(vim.api.nvim_buf_get_lines(0, 0, -1, false), temp_path)
+
+        -- format this temp file
+        vim.fn.system("gdformat " .. vim.fn.shellescape(temp_path))
+
+        -- read from formatted file the formatted data
+        local formatted_content = vim.fn.readfile(temp_path)
+
+        -- remove temp file
+        vim.fn.delete(temp_path)
+
+        -- if formatting is success, update the current file
+        if #formatted_content > 0 then
+            vim.api.nvim_buf_set_lines(0, 0, -1, false, formatted_content)
+        else
+            print("gdformat failed to format the file")
+        end
+    end,
+})
+
+
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "gdscript",
     callback = function()
